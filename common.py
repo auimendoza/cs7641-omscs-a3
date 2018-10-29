@@ -68,3 +68,15 @@ def plot_first_images(firstimages, nc, method, label):
     plt.gcf()
     plt.savefig(('%s %s reconstucted.png' % (label, method)).replace(" ", "-"))
     plt.close()
+
+def plot_pdiff(label, method, pdiffms, pdiffstds, n_components):
+    print("plot pdiff...")
+    plt.plot(n_components, pdiffms, '.-')
+    plt.fill_between(n_components, pdiffms - pdiffstds,
+                     pdiffms + pdiffstds, alpha=0.1)
+    plt.xlabel("n_components")
+    plt.ylabel("% difference pairwise distances")
+    plt.title("%s %s Pairwise Distance Differences" % (label, method))
+    plt.gcf()
+    plt.savefig("%s-%s-pdiff.png" % (label, method))
+    plt.close()
