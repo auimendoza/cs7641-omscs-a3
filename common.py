@@ -3,6 +3,31 @@ from __future__ import print_function
 import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
+import pandas as pd
+
+def getDataset(id):
+    n_components_range = []
+    X = None
+    y = None
+    label = ''
+    if id == 1:
+        print("Reading credit card data...")
+        data = pd.read_csv('cctrain.csv')
+        label = 'Credit Card'
+        n_components_range = range(1,data.shape[1])
+    if id == 2:
+        print("Reading sign language data...")
+        data = pd.read_csv('sltrain.csv')
+        label = 'Sign Language'
+        frange = np.arange(1,data.shape[1])
+        n_components_range = frange[np.mod(frange, 56) == 0].tolist()
+
+    X = data.iloc[:,:-1]
+    y = data.iloc[:,-1]
+    return X, y, label, n_components_range
+
+def saveXt(label, method, Xt):
+      np.savetxt('%s-%s-Xt.csv' % (label.replace(" ", "-"), method), Xt, delimiter=',', fmt='%.10f' )
 
 def plot_scree(label, method, ver, n_components=None):
     print("plot scree...")
@@ -15,7 +40,7 @@ def plot_scree(label, method, ver, n_components=None):
     plt.xlabel("Principal Component")
     plt.legend(["Variance", "Cumulative Variance"], loc="best")
     plt.gcf()
-    filename = '%s-%s-%d-scree.png' % (label.lower(), method, n)
+    filename = '%s-%s-%d-scree.png' % (label.replace(" ", "-"), method, n)
     plt.savefig(filename)
     plt.close()
 
@@ -49,7 +74,7 @@ def biplot(label, method, score, coeff, labels):
     plt.title("%s %s Biplot" % (label, method))
     plt.grid()
     plt.gcf()
-    plt.savefig("%s-%s-biplot.png" % (label, method))
+    plt.savefig("%s-%s-biplot.png" % (label.replace(" ", "-"), method))
     plt.close()
 
 def plot_first_images(firstimages, nc, method, label):
@@ -78,5 +103,5 @@ def plot_pdiff(label, method, pdiffms, pdiffstds, n_components):
     plt.ylabel("% difference pairwise distances")
     plt.title("%s %s Pairwise Distance Differences" % (label, method))
     plt.gcf()
-    plt.savefig("%s-%s-pdiff.png" % (label, method))
+    plt.savefig("%s-%s-pdiff.png" % (label.replace(" ", "-"), method))
     plt.close()

@@ -40,7 +40,7 @@ def reduceDim(label, method, X, n_components, reconstructimages=False, seed=seed
     biplot(label, method, Xt[:,0:2],np.transpose(model.components_[0:2, :]), X.columns.tolist())
     plot_scree(label, method, ver, n)
     
-    print("applying %s using n_components = %s" % (method, usen))
+    print("%s: reducing components to %d..." % (method, usen))
     model = PCA(n_components=usen, random_state=seed)
     Xt = model.fit_transform(X)
 
@@ -53,3 +53,4 @@ for i in [1, 2]:
   Xt = reduceDim(label, method, X, n_components_range, reconstructimages)
   saveXt(label, method, Xt)
   reconstructimages = True
+  print("done.")
