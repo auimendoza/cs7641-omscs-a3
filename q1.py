@@ -2,16 +2,17 @@ from __future__ import print_function
 
 from sklearn.cluster import KMeans
 from sklearn.mixture import GaussianMixture
-from sklearn.metrics import silhouette_samples, silhouette_score
+from sklearn.metrics import silhouette_samples, silhouette_score, f1_score, accuracy_score
+from mpl_toolkits.mplot3d import Axes3D
 import matplotlib.pyplot as plt
-import matplotlib.cm as cm
+from common import *
 import numpy as np
 import pandas as pd
 
 seed=42
 clustermethods = ['KM', 'GM']
 
-def cluster_silh_plot(prefix, clustermethod, range_n_clusters, X, seed=seed):
+def cluster_silh_plot(prefix, clustermethod, range_n_clusters, X, plotdim, seed=seed):
     if clustermethod not in clustermethods:
         print("Invalid cluster method %s" % (clustermethod))
         return None
@@ -68,128 +69,37 @@ def cluster_silh_plot(prefix, clustermethod, range_n_clusters, X, seed=seed):
     print("highest silhoutte score = %.10f" % (silhouette_avg))
     print("n_clusters with highest score = %d" % (n_clusters))
     print("plotting...")
-    # Create a subplot with 1 row and 2 columns
-    fig, (ax1, ax2) = plt.subplots(1, 2)
-    fig.set_size_inches(18, 7)
 
-    # The 1st subplot is the silhouette plot
-    # The silhouette coefficient can range from -1, 1 but in this example all
-    # lie within [-0.1, 1]
-    ax1.set_xlim([-0.1, 1])
-    # The (n_clusters+1)*10 is for inserting blank space between silhouette
-    # plots of individual clusters, to demarcate them clearly.
-    ax1.set_ylim([0, len(X) + (n_clusters + 1) * 10])
+    plot_clusters(prefix, clustermethod, name, X, cluster_labels, n_clusters, plotdim)
+    plot_silh(prefix, clustermethod, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values)
 
-    y_lower = 10
-    for i in range(n_clusters):
-        # Aggregate the silhouette scores for samples belonging to
-        # cluster i, and sort them
-        ith_cluster_silhouette_values = \
-            sample_silhouette_values[cluster_labels == i]
-
-        ith_cluster_silhouette_values.sort()
-
-        size_cluster_i = ith_cluster_silhouette_values.shape[0]
-        y_upper = y_lower + size_cluster_i
-
-        color = cm.nipy_spectral(float(i) / n_clusters)
-        ax1.fill_betweenx(np.arange(y_lower, y_upper),
-                          0, ith_cluster_silhouette_values,
-                          facecolor=color, edgecolor=color, alpha=0.7)
-
-        # Label the silhouette plots with their cluster numbers at the middle
-        ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
-
-        # Compute the new y_lower for next plot
-        y_lower = y_upper + 10  # 10 for the 0 samples
-
-    ax1.set_title("The silhouette plot for the various clusters.")
-    ax1.set_xlabel("The silhouette coefficient values")
-    ax1.set_ylabel("Cluster label")
-
-    # The vertical line for average silhouette score of all the values
-    ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
-
-    ax1.set_yticks([])  # Clear the yaxis labels / ticks
-    ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
-
-    # 2nd Plot showing the actual clusters formed
-    colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
-    ax2.scatter(X.iloc[:, 0], X.iloc[:, 1], marker='.', s=30, lw=0, alpha=0.7,
-                c=colors, edgecolor='k')
-
-    if clustermethod == 'KM':
-        # Labeling the clusters
-        centers = clusterer.cluster_centers_
-        # Draw white circles at cluster centers
-        ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
-                    c="white", alpha=1, s=200, edgecolor='k')
-
-        for i, c in enumerate(centers):
-            ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
-                        s=50, edgecolor='k')
-
-    ax2.set_title("The visualization of the clustered data.")
-    ax2.set_xlabel("Feature space for the 1st feature")
-    ax2.set_ylabel("Feature space for the 2nd feature")
-
-    plt.suptitle(("Silhouette analysis for %s clustering on %s data "
-                  "with n_clusters = %d\nSilhoutte average %.3f" % (name, prefix.replace("-", " "), n_clusters, silhouette_avg)),
-                  fontsize=14, fontweight='bold')
-    plt.gcf()
-    plt.savefig(prefix+'-'+clustermethod+'-'+str(n_clusters)+'.png')
-    plt.close()
-
-    with open(prefix+'-silhscores.csv', "w") as f:
+    with open(prefix.replace(" ", "-")+'-silhscores.csv', "w") as f:
       for line in cluster_scores:
         f.write("%s\n" % (line))
 
     return cluster_labels, silhouette_avgs
 
-print("Reading credit card data...")
-data = pd.read_csv('cctrain.csv')
-
-range_n_clusters = range(2, 11)
-X = data.iloc[:,:-1]
-label = 'Credit-Card'
-plotx = []
-ploty = []
-for m in clustermethods:
-    print ("doing %s..." % (m))
-    cluster_labels, silhouette_avgs = cluster_silh_plot(label, m, range_n_clusters, X, seed)
-    np.savetxt("%s-%s-cluster-labels.csv" % (label, m), cluster_labels, fmt="%d")
-    plotx.append(range_n_clusters)
-    ploty.append(silhouette_avgs)
-plt.plot(plotx[0], ploty[0], '.-')
-plt.plot(plotx[1], ploty[1], '.-')
-plt.ylabel("Silhouette Score")
-plt.xlabel("n_clusters")
-plt.title("Credit Card Data: Silhouette Score")
-plt.legend(clustermethods, loc="best")
-plt.gcf()
-plt.savefig("%s-score.png" % (label))
-plt.close()
-
-print("Reading sign language data...")
-sldata = pd.read_csv('sltrain.csv')
-Xsl = sldata.iloc[:,:-1]
-
-range_n_clusters = np.linspace(5,30,10, dtype='int').tolist()
-label = 'Sign-Language'
-plotx = []
-ploty = []
-for m in clustermethods:
-    print ("doing %s..." % (m))
-    cluster_labels, silhouette_avgs = cluster_silh_plot(label, m, range_n_clusters, Xsl, seed)
-    np.savetxt("%s-%s-cluster-labels.csv" % (label, m), cluster_labels, fmt="%d")
-    plotx.append(range_n_clusters)
-    ploty.append(silhouette_avgs)
-plt.plot(plotx[0], ploty[0], '.-')
-plt.plot(plotx[1], ploty[1], '.-')
-plt.ylabel("Silhouette Score")
-plt.xlabel("n_clusters")
-plt.title("Sign Language Data: Silhouette Score")
-plt.legend(clustermethods, loc="best")
-plt.gcf()
-plt.savefig("%s-score.png" % (label))
-plt.close()
+scorers = [[f1_score, accuracy_score], ['f1', 'accuracy']]
+#plotdata = []
+#xlabels = []
+for id in [1,2]:
+    X, y, label, _, range_n_clusters = getDataset(id)
+    #xlabels.append('%s\n(%s)' % (label, scorers[1][id-1]))
+    plotx = []
+    ploty = []
+    plotcomponents = [[(1, 0, 2), (1, 0, 2)],[(91, 397, 611), (0, 1, 678)]]
+    #scores = []
+    for i, m in enumerate(clustermethods):
+        print ("doing %s..." % (m))
+        cluster_labels, silhouette_avgs = cluster_silh_plot(label, m, range_n_clusters, X, plotcomponents[id-1][i])
+        np.savetxt("%s-%s-cluster-labels.csv" % (label.replace(" ", "-"), m), cluster_labels, fmt="%d")
+        plotx.append(range_n_clusters)
+        ploty.append(silhouette_avgs)
+        if (np.unique(cluster_labels).shape[0] == np.unique(y).shape[0]):
+            score = scorers[0][id-1](y, cluster_labels)
+            print("method %s, scorer %s, score %.3f" % (m, scorers[1][i], score))
+        #scores.append(score)
+    #plotdata.append(scores)
+    plot_silhscores(label, plotx, ploty, clustermethods)
+#title = "Accuracy/F1 Score of Clustering Algorithms"
+#plot_2bar(plotdata[0], plotdata[1], clustermethods, xlabels, [0, 1], 'f1/accuracy score', title, 'q1score.png')

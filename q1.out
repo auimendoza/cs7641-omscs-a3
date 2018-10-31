@@ -1,0 +1,59 @@
+asterix:a3 auimendoza$ python q1.py 
+Reading credit card data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.2997684834103576
+For n_clusters = 3 The average silhouette_score is : 0.31834448713242364
+For n_clusters = 4 The average silhouette_score is : 0.17279293299814327
+For n_clusters = 5 The average silhouette_score is : 0.17546386892422353
+For n_clusters = 6 The average silhouette_score is : 0.1670676147976352
+For n_clusters = 7 The average silhouette_score is : 0.10044691392187313
+For n_clusters = 8 The average silhouette_score is : 0.09402933004929782
+For n_clusters = 9 The average silhouette_score is : 0.09548257080583811
+For n_clusters = 10 The average silhouette_score is : 0.09507024959330984
+highest silhoutte score = 0.3183444871
+n_clusters with highest score = 3
+plotting...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.14674048031346829
+For n_clusters = 3 The average silhouette_score is : 0.0018376752600785706
+For n_clusters = 4 The average silhouette_score is : -0.02156105929494394
+For n_clusters = 5 The average silhouette_score is : -0.01080074662618395
+For n_clusters = 6 The average silhouette_score is : -0.010352313437190529
+For n_clusters = 7 The average silhouette_score is : -0.005152747838640265
+For n_clusters = 8 The average silhouette_score is : -0.02532708029520106
+For n_clusters = 9 The average silhouette_score is : -0.03856071720594083
+For n_clusters = 10 The average silhouette_score is : -0.04316869909611019
+highest silhoutte score = 0.1467404803
+n_clusters with highest score = 2
+plotting...
+method GM, scorer accuracy, score 0.339
+Reading sign language data...
+doing KM...
+For n_clusters = 5 The average silhouette_score is : 0.09195576987621222
+For n_clusters = 7 The average silhouette_score is : 0.07694164500864234
+For n_clusters = 10 The average silhouette_score is : 0.07140789242833141
+For n_clusters = 13 The average silhouette_score is : 0.059882626943531726
+For n_clusters = 16 The average silhouette_score is : 0.06093030516086935
+For n_clusters = 18 The average silhouette_score is : 0.06415901414518461
+For n_clusters = 21 The average silhouette_score is : 0.06842926771245364
+For n_clusters = 24 The average silhouette_score is : 0.0681507990998569
+For n_clusters = 27 The average silhouette_score is : 0.06544320235436449
+For n_clusters = 30 The average silhouette_score is : 0.06604077523321637
+highest silhoutte score = 0.0919557699
+n_clusters with highest score = 5
+plotting...
+doing GM...
+For n_clusters = 5 The average silhouette_score is : 0.021546175819388284
+For n_clusters = 7 The average silhouette_score is : 0.039907405251284105
+For n_clusters = 10 The average silhouette_score is : 0.03796157765019816
+For n_clusters = 13 The average silhouette_score is : 0.03094170303548851
+For n_clusters = 16 The average silhouette_score is : 0.040744028727258956
+For n_clusters = 18 The average silhouette_score is : 0.04647851640513217
+For n_clusters = 21 The average silhouette_score is : 0.057824201365272436
+For n_clusters = 24 The average silhouette_score is : 0.0583811665467797
+For n_clusters = 27 The average silhouette_score is : 0.06357641446366331
+For n_clusters = 30 The average silhouette_score is : 0.05949907256952514
+highest silhoutte score = 0.0635764145
+n_clusters with highest score = 27
+plotting...
+asterix:a3 auimendoza$ 

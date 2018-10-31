@@ -10,24 +10,45 @@ def getDataset(id):
     X = None
     y = None
     label = ''
+    range_n_clusters = []
     if id == 1:
         print("Reading credit card data...")
         data = pd.read_csv('cctrain.csv')
         label = 'Credit Card'
         n_components_range = range(1,data.shape[1])
+        range_n_clusters = range(2, 11)
     if id == 2:
         print("Reading sign language data...")
         data = pd.read_csv('sltrain.csv')
         label = 'Sign Language'
         frange = np.arange(1,data.shape[1])
         n_components_range = frange[np.mod(frange, 56) == 0].tolist()
+        range_n_clusters = np.linspace(5,30,10, dtype='int').tolist()
 
     X = data.iloc[:,:-1]
     y = data.iloc[:,-1]
-    return X, y, label, n_components_range
+    return X, y, label, n_components_range, range_n_clusters
 
 def saveXt(label, method, Xt):
       np.savetxt('%s-%s-Xt.csv' % (label.replace(" ", "-"), method), Xt, delimiter=',', fmt='%.10f' )
+
+def plot_clusters(label, method, methodname, X, y, nclasses, components):
+    c0 = components[0]
+    c1 = components[1]
+    c2 = components[2]
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+    for j in range(nclasses):
+        x = X.iloc[y == j,:]
+        if x.shape[0] > 0:
+            ax.scatter(x.iloc[:,c0], x.iloc[:,c1],  x.iloc[:,c2], marker='^')
+    ax.set_xlabel(X.columns[c0])
+    ax.set_ylabel(X.columns[c1])
+    ax.set_zlabel(X.columns[c2])
+    plt.title("%s %s Clusters (k=%d)" % (label, methodname, nclasses))
+    plt.gcf()
+    plt.savefig("%s-%s-clusters.png" % (label.replace(" ", "-"), method))
+    plt.close()
 
 def plot_scree(label, method, ver, n_components=None):
     print("plot scree...")
@@ -105,3 +126,108 @@ def plot_pdiff(label, method, pdiffms, pdiffstds, n_components):
     plt.gcf()
     plt.savefig("%s-%s-pdiff.png" % (label.replace(" ", "-"), method))
     plt.close()
+
+def plot_silhscores(label, plotx, ploty, clustermethods):
+    plt.plot(plotx[0], ploty[0], '.-')
+    plt.plot(plotx[1], ploty[1], '.-')
+    plt.ylabel("Silhouette Score")
+    plt.xlabel("n_clusters")
+    plt.title("%s Data: Silhouette Score" % (label.replace("-", " ")))
+    plt.legend(clustermethods, loc="best")
+    plt.gcf()
+    plt.savefig("%s-score.png" % (label.replace(" ", "-")))
+    plt.close()
+
+def plot_silh(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values):
+    # Create a subplot with 1 row and 2 columns
+    fig, (ax1, ax2) = plt.subplots(1, 2)
+    fig.set_size_inches(18, 7)
+
+    # The 1st subplot is the silhouette plot
+    # The silhouette coefficient can range from -1, 1 but in this example all
+    # lie within [-0.1, 1]
+    ax1.set_xlim([-0.1, 1])
+    # The (n_clusters+1)*10 is for inserting blank space between silhouette
+    # plots of individual clusters, to demarcate them clearly.
+    ax1.set_ylim([0, len(X) + (n_clusters + 1) * 10])
+
+    y_lower = 10
+    for i in range(n_clusters):
+        # Aggregate the silhouette scores for samples belonging to
+        # cluster i, and sort them
+        ith_cluster_silhouette_values = \
+            sample_silhouette_values[cluster_labels == i]
+
+        ith_cluster_silhouette_values.sort()
+
+        size_cluster_i = ith_cluster_silhouette_values.shape[0]
+        y_upper = y_lower + size_cluster_i
+
+        color = cm.nipy_spectral(float(i) / n_clusters)
+        ax1.fill_betweenx(np.arange(y_lower, y_upper),
+                          0, ith_cluster_silhouette_values,
+                          facecolor=color, edgecolor=color, alpha=0.7)
+
+        # Label the silhouette plots with their cluster numbers at the middle
+        ax1.text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+
+        # Compute the new y_lower for next plot
+        y_lower = y_upper + 10  # 10 for the 0 samples
+
+    ax1.set_title("The silhouette plot for the various clusters.")
+    ax1.set_xlabel("The silhouette coefficient values")
+    ax1.set_ylabel("Cluster label")
+
+    # The vertical line for average silhouette score of all the values
+    ax1.axvline(x=silhouette_avg, color="red", linestyle="--")
+
+    ax1.set_yticks([])  # Clear the yaxis labels / ticks
+    ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
+
+    # 2nd Plot showing the actual clusters formed
+    colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
+    ax2.scatter(X.iloc[:, 0], X.iloc[:, 1], marker='.', s=30, lw=0, alpha=0.7,
+                c=colors, edgecolor='k')
+
+    if method == 'KM':
+        # Labeling the clusters
+        centers = clusterer.cluster_centers_
+        # Draw white circles at cluster centers
+        ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
+                    c="white", alpha=1, s=200, edgecolor='k')
+
+        for i, c in enumerate(centers):
+            ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
+                        s=50, edgecolor='k')
+
+    ax2.set_title("The visualization of the clustered data.")
+    ax2.set_xlabel("Feature space for the 1st feature")
+    ax2.set_ylabel("Feature space for the 2nd feature")
+
+    plt.suptitle(("Silhouette analysis for %s clustering on %s data "
+                  "with n_clusters = %d\nSilhoutte average %.3f" % (name, label.replace("-", " "), n_clusters, silhouette_avg)),
+                  fontsize=14, fontweight='bold')
+    plt.gcf()
+    plt.savefig(label.replace(" ", "-")+'-'+method+'-'+str(n_clusters)+'.png')
+    plt.close()
+
+def plot_2bar(xdata1, xdata2, legends, xlabels, ylim, ylabel, title, figname):
+        #data1 = {'cat1': [vals1], 'cat2': [vals1]}
+        #data2 = {'cat1': [vals2], 'cat2': [vals2]}
+        #legends = [vals1name, vals2name]
+        width=0.8
+        vals = [xdata1, xdata2]
+
+        n = len(vals)
+        _X = np.arange(len(xlabels))
+        for i in range(n):
+            plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
+                        width=width/float(n), align="edge")   
+            plt.xticks(_X, xlabels)
+        plt.ylim(ylim[0], ylim[1])
+        plt.ylabel(ylabel)
+        plt.legend(legends)
+        plt.title(title)
+        plt.gcf()
+        plt.savefig(figname)
+        plt.close()
