@@ -43,13 +43,20 @@ def reduceDim(label, method, X, n_components, reconstructimages=False, seed=seed
     print("%s: reducing components to %d..." % (method, usen))
     model = PCA(n_components=usen, random_state=seed)
     Xt = model.fit_transform(X)
+    xticks = range(1,usen+1)
+    yvalues = model.explained_variance_
+    xlabel = 'principal components'
+    ylabel = 'eigenvalues'
+    title = '%s PCA Eigenvalues' % (label)
+    figname = "%s-pca-eigenvalues.png" % (label.replace(" ", "-"))
+    plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname)
 
     return Xt
 
 reconstructimages = False
 for i in [1, 2]:
   print("="*10)
-  X, y, label, n_components_range = getDataset(i)
+  X, y, label, n_components_range, _ = getDataset(i)
   Xt = reduceDim(label, method, X, n_components_range, reconstructimages)
   saveXt(label, method, Xt)
   reconstructimages = True

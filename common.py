@@ -68,7 +68,7 @@ def plot_scree(label, method, ver, n_components=None):
 def plot_re(label, method, mse, nc):
     print("plot re...")
     plt.plot(nc, mse, '.-')
-    plt.ylabel('Reconstruction Error')
+    plt.ylabel("Reconstruction Error")
     plt.xlabel('n components')
     plt.title('%s %s Reconstruction Error' % (label, method))
     plt.gcf()
@@ -136,6 +136,20 @@ def plot_silhscores(label, plotx, ploty, clustermethods):
     plt.legend(clustermethods, loc="best")
     plt.gcf()
     plt.savefig("%s-score.png" % (label.replace(" ", "-")))
+    plt.close()
+
+def plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname):
+    plt.bar(xticks, yvalues)
+    if len(xticks) > 20:
+        nxt = np.array(xticks)
+        nxt = nxt[np.mod(nxt, len(xticks)/20) == 1]
+        xticks = nxt.tolist()
+    plt.xticks(xticks)
+    plt.xlabel(xlabel)
+    plt.ylabel(ylabel)
+    plt.title(title)
+    plt.gcf()
+    plt.savefig(figname)
     plt.close()
 
 def plot_silh(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values):
