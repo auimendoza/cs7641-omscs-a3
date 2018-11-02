@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 import numpy as np
 import pandas as pd
+import scipy.sparse as sps
+from scipy.linalg import pinv
+from sklearn.preprocessing import MinMaxScaler
 
 def getDataset(id):
     n_components_range = []
@@ -31,6 +34,21 @@ def getDataset(id):
 
 def saveXt(label, method, Xt):
       np.savetxt('%s-%s-Xt.csv' % (label.replace(" ", "-"), method), Xt, delimiter=',', fmt='%.10f' )
+
+def reconstruct(component,X):
+    if sps.issparse(component):
+        W = component.todense()
+    p = pinv(W)
+    print("p", p.shape)
+    print("W", W.shape)
+    print("X", X.shape)
+    r = np.dot(np.dot(p,W),(X.T)).T # Unproject projected data
+    return r
+
+def reconstructit(component, X):
+    ax = np.dot(X, component.todense())
+    scaler = MinMaxScaler()
+    return scaler.fit_transform(ax)
 
 def plot_clusters(label, method, methodname, X, y, nclasses, components):
     c0 = components[0]
