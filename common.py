@@ -245,3 +245,24 @@ def plot_2bar(xdata1, xdata2, legends, xlabels, ylim, ylabel, title, figname):
         plt.gcf()
         plt.savefig(figname)
         plt.close()
+
+def plot_2axis(y1, y2, x, ylabel1, ylabel2, xlabel, title, figname):
+    fig, ax1 = plt.subplots()
+    pts1 = ax1.plot(x, y1, 'o-', label=ylabel1)
+    ax1.set_xlabel(xlabel)
+    ax1.set_ylabel(ylabel1)
+    
+    ax2 = ax1.twinx()
+    pts2 = ax2.plot(x, y2, '.-', label=ylabel2, linestyle='dashed', color="green", alpha=0.5)
+    pts = pts1 + pts2
+    labs = [p.get_label() for p in pts]
+    ax2.set_ylabel(ylabel2, color="green")
+    ax2.tick_params(axis='y', labelcolor='green')
+
+    plt.title(title)
+    plt.legend(pts, labs, loc='best')
+    
+    fig.tight_layout()
+    fig = plt.gcf()
+    fig.savefig(figname, bbox_inches="tight")
+    plt.close()
