@@ -1,15 +1,16 @@
 from __future__ import print_function
 
 from sklearn.random_projection import SparseRandomProjection
+from sklearn.random_projection import johnson_lindenstrauss_min_dim
+from sklearn.metrics.pairwise import euclidean_distances
 from sklearn.metrics import pairwise_distances, mean_squared_error
 import numpy as np
 import pandas as pd
 from common import *
 
-seed=42
 method='RP'
 
-def applyRP(label, method, X, n_components, reconstructimages=False, seed=seed):
+def applyRP(label, method, X, n_components, reconstructimages=False):
     print("doing %s..." % (method))
     pdiffms = []
     pdiffstds = []
@@ -17,7 +18,7 @@ def applyRP(label, method, X, n_components, reconstructimages=False, seed=seed):
     firstimages = []
 
     for n in n_components:
-      model = SparseRandomProjection(n_components=n, random_state=seed)
+      model = SparseRandomProjection(n_components=n)
       Xt = model.fit_transform(X)
       Xr = reconstructit(model.components_, Xt)
       mse.append(mean_squared_error(X, Xr))
@@ -45,11 +46,11 @@ def applyRP(label, method, X, n_components, reconstructimages=False, seed=seed):
 
 def reduceDim(method, X, n):
     print("%s: reducing components to %d..." % (method, n))
-    model = SparseRandomProjection(n_components=n, random_state=seed)
+    model = SparseRandomProjection(n_components=n)
     Xt = model.fit_transform(X)
     return Xt
 
-def plot_jl_bounds():
+def plot_jl_bounds(label, X):
     """
     http://scikit-learn.org/stable/auto_examples/plot_johnson_lindenstrauss_bound.html#sphx-glr-auto-examples-plot-johnson-lindenstrauss-bound-py
     """
@@ -70,23 +71,22 @@ def plot_jl_bounds():
         plt.legend(["eps = %0.1f" % eps for eps in eps_range], loc="best")
         plt.xlabel("Number of observations to eps-embed")
         plt.ylabel("Minimum number of dimensions")
-        plt.title("Johnson-Lindenstrauss bounds:\nn_samples vs n_components")
+        plt.title("Johnson-Lindenstrauss bounds:\n%s Data" % (label))
         plt.axhline(y=X.shape[1], color='r', linestyle='--', alpha=0.3)
         plt.axvline(x=X.shape[0], color='r', linestyle='--', alpha=0.3)
-        plt.axhline(y=Xsl.shape[1], color='g', linestyle='--', alpha=0.3)
-        plt.axvline(x=Xsl.shape[0], color='g', linestyle='--', alpha=0.3)
         plt.gcf()
-        plt.savefig('jlbounds-RP-%d.png' % i)
-        plt.show()
+        plt.savefig('%s-jlbounds.png' % (label.replace(" ","-")))
+        plt.close()
 
-plot_jl_bounds()
 reconstructimages = False
 usen = [11, 280]
 for i in [1, 2]:
-  print("="*10)
-  X, y, label, n_components_range, _ = getDataset(i)
-  applyRP(label, method, X, n_components_range, reconstructimages)
+  for j in range(5):
+    print("="*10)
+    X, y, label, n_components_range, _ = getDataset(i)
+    applyRP(label, method+str(j), X, n_components_range, reconstructimages)
   Xt = reduceDim(method, X, usen[i-1])
   saveXt(label, method, Xt)
   reconstructimages = True
+  plot_jl_bounds(label, X)
   print("done.")
