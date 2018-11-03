@@ -8,8 +8,9 @@ from common import *
 seed=42
 method='LDA'
 
-def reduceDim(label, method, X, y, n_components, scorer, seed=seed):
+def reduceDim(label, method, X, y, scorer, seed=seed):
     print("doing %s..." % (method))
+    score = None
 
     model = LinearDiscriminantAnalysis()
     Xt = model.fit_transform(X, y)
@@ -25,17 +26,37 @@ def reduceDim(label, method, X, y, n_components, scorer, seed=seed):
       plot_scree(label, method, ver, n)
 
     if scorer == "accuracy":
-      print("accuracy score = %.3f" % (accuracy_score(y, ypred)))
+      score = accuracy_score(y, ypred)
+      print("accuracy score = %.3f" % (score))
     if scorer == "f1":
-      print("f1 score = %.3f" % (f1_score(y, ypred)))
+      score = f1_score(y, ypred)
+      print("f1 score = %.3f" % (score))
     
-    return Xt
+    return Xt, score
+
+def plot_scores(scores, labels):
+    figname = "%s-score.png" % (method)
+    xticks = range(2)
+    plt.bar(xticks, scores)
+    plt.text(-0.2, scores[0]/2., 'f1 score = %.3f' % (scores[0]), color="white")
+    plt.text(0.8, scores[1]/2., 'accuracy = %.3f' % (scores[1]), color="white")
+    plt.ylabel('f1 / accuracy score')
+    plt.xticks(xticks, labels)
+    plt.title("LDA Performance")
+    plt.gcf()
+    plt.savefig(figname, bbox_inches = "tight")
+    plt.close()
 
 scorer = "f1"
+scores = []
+labels = []
 for i in [1, 2]:
   print("="*10)
-  X, y, label, n_components_range = getDataset(i)
-  Xt = reduceDim(label, method, X, y, n_components_range, scorer)
+  X, y, label, _, _ = getDataset(i)
+  Xt, score = reduceDim(label, method, X, y, scorer)
   saveXt(label, method, Xt)
+  scores.append(score)
+  labels.append(label)
   scorer = "accuracy"
   print("done.")
+plot_scores(scores, labels)
