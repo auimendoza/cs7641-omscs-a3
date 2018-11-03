@@ -86,7 +86,7 @@ for i in [1, 2]:
     X, y, label, n_components_range, _ = getDataset(i)
     applyRP(label, method+str(j), X, n_components_range, reconstructimages)
   Xt = reduceDim(method, X, usen[i-1])
-  saveXt(label, method, Xt)
+  saveXt(label, method, Xt, "RP")
   reconstructimages = True
   plot_jl_bounds(label, X)
   print("done.")

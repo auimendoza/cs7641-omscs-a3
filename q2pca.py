@@ -58,6 +58,6 @@ for i in [1, 2]:
   print("="*10)
   X, y, label, n_components_range, _ = getDataset(i)
   Xt = reduceDim(label, method, X, n_components_range, reconstructimages)
-  saveXt(label, method, Xt)
+  saveXt(label, method, Xt, "PC")
   reconstructimages = True
   print("done.")

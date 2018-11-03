@@ -9,7 +9,7 @@ from common import *
 seed=42
 method='ICA'
 
-def reduceDim(label, method, X, n_components, reconstructimages=False, seed=seed):
+def applyICA(label, method, X, n_components, reconstructimages=False, seed=seed):
     print("doing %s..." % (method))
     mse = []
     firstimages = []
@@ -42,12 +42,20 @@ def reduceDim(label, method, X, n_components, reconstructimages=False, seed=seed
     plot_2axis(meank, ngratio, n_components, 'mean kurtosis', 'ratio non-gaussian to gaussian', 'no of components', 
       '%s kurtosis and non-gaussian components' % (method), 
       '%s-%s-kurt-ng.png' % (label.replace(" ", "-"), method))
+
+def reduceDim(method, X, n):
+    print("%s: reducing components to %d..." % (method, n))
+    model = FastICA(n_components=n, random_state=seed)
+    Xt = model.fit_transform(X)
     return Xt
 
 reconstructimages = False
+usen = [15, 112]
 for i in [1, 2]:
   print("="*10)
   X, y, label, n_components_range, range_n_clusters = getDataset(i)
-  Xt = reduceDim(label, method, X, n_components_range, reconstructimages)
-  saveXt(label, method, Xt)
+  applyICA(label, method, X, n_components_range, reconstructimages)
+  Xt = reduceDim(method, X, usen[i-1])
+  saveXt(label, method, Xt, "IC")
   reconstructimages = True
+  print("done.")

@@ -54,7 +54,7 @@ for i in [1, 2]:
   print("="*10)
   X, y, label, _, _ = getDataset(i)
   Xt, score = reduceDim(label, method, X, y, scorer)
-  saveXt(label, method, Xt)
+  saveXt(label, method, Xt, "LD")
   scores.append(score)
   labels.append(label)
   scorer = "accuracy"

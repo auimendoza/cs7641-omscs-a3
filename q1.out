@@ -1,4 +1,4 @@
-asterix:a3 auimendoza$ python q1.py 
+asterix:assign3 auimendoza$ python q1.py
 Reading credit card data...
 doing KM...
 For n_clusters = 2 The average silhouette_score is : 0.2997684834103576
@@ -56,4 +56,4 @@ For n_clusters = 30 The average silhouette_score is : 0.05949907256952514
 highest silhoutte score = 0.0635764145
 n_clusters with highest score = 27
 plotting...
-asterix:a3 auimendoza$ 
+asterix:assign3 auimendoza$

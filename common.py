@@ -32,8 +32,29 @@ def getDataset(id):
     y = data.iloc[:,-1]
     return X, y, label, n_components_range, range_n_clusters
 
-def saveXt(label, method, Xt):
-      np.savetxt('%s-%s-Xt.csv' % (label.replace(" ", "-"), method), Xt, delimiter=',', fmt='%.10f' )
+def getReducedX(id, method):
+    X = None
+    label = ''
+    if id == 1:
+        label = 'Credit Card'
+        filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
+        print("Reading %s reduced %s data..." % (method.lower(), label.lower()))
+        X = pd.read_csv(filename)
+    if id == 2:
+        label = 'Sign Language'
+        filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
+        print("Reading %s reduced %s data..." % (method.lower(), label.lower()))
+        X = pd.read_csv(filename)
+
+    return X
+
+def saveXt(label, method, Xt, colprefix):
+    ncolumns = Xt.shape[1]
+    columns = map(lambda x: "%s%d" % (colprefix, x), np.arange(ncolumns)+1)
+    filename = '%s-%s-Xt.csv' % (label.replace(" ", "-"), method)
+    with open(filename, 'wb') as xf:
+        xf.write(','.join(columns)+'\n')
+        np.savetxt(xf, Xt, delimiter=',', fmt='%.10f' )
 
 def reconstruct(component,X):
     if sps.issparse(component):
