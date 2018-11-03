@@ -81,12 +81,15 @@ def plot_jl_bounds(label, X):
 reconstructimages = False
 usen = [11, 280]
 for i in [1, 2]:
+  print("="*10)
+  X, _, label, n_components_range, _ = getDataset(i)
   for j in range(5):
-    print("="*10)
-    X, y, label, n_components_range, _ = getDataset(i)
     applyRP(label, method+str(j), X, n_components_range, reconstructimages)
-  Xt = reduceDim(method, X, usen[i-1])
-  saveXt(label, method, Xt, "RP")
+  for istest in[False, True]:
+    if istest:
+      X, _, label, _, _ = getDataset(i, istest)
+    Xt = reduceDim(method, X, usen[i-1])
+    saveXt(label, method, Xt, "RP", istest)
   reconstructimages = True
   plot_jl_bounds(label, X)
   print("done.")

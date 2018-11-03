@@ -8,7 +8,7 @@ import scipy.sparse as sps
 from scipy.linalg import pinv
 from sklearn.preprocessing import MinMaxScaler
 
-def getDataset(id):
+def getDataset(id, istest=False):
     n_components_range = []
     X = None
     y = None
@@ -16,13 +16,19 @@ def getDataset(id):
     range_n_clusters = []
     if id == 1:
         print("Reading credit card data...")
-        data = pd.read_csv('cctrain.csv')
+        filename = 'cctrain.csv'
+        if istest:
+            filename = 'cctest.csv'
+        data = pd.read_csv(filename)
         label = 'Credit Card'
         n_components_range = range(1,data.shape[1])
         range_n_clusters = range(2, 11)
     if id == 2:
         print("Reading sign language data...")
-        data = pd.read_csv('sltrain.csv')
+        filename = 'sltrain.csv'
+        if istest:
+            filename = 'sltest.csv'
+        data = pd.read_csv(filename)
         label = 'Sign Language'
         frange = np.arange(1,data.shape[1])
         n_components_range = frange[np.mod(frange, 56) == 0].tolist()
@@ -32,30 +38,28 @@ def getDataset(id):
     y = data.iloc[:,-1]
     return X, y, label, n_components_range, range_n_clusters
 
-def getReducedX(id, method):
-    X = None
-    label = ''
-    _, y, _, _, _ = getDataset(id)
+def getReducedX(id, method, istest=False):
+    _, y, label, _, _ = getDataset(id, istest)
+    filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
+    if istest:
+        filename = '%s-%s-test-Xt.csv' % (label.replace(" ", "-"), method)
+    print("Reading %s-reduced %s data..." % (method, label))
+    X = pd.read_csv(filename)
+
     if id == 1:
-        label = 'Credit Card'
-        filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
-        print("Reading %s-reduced %s data..." % (method, label))
-        X = pd.read_csv(filename)
         range_n_clusters = range(2,11)
     if id == 2:
-        label = 'Sign Language'
-        filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
-        print("Reading %s reduced %s data..." % (method, label))
-        X = pd.read_csv(filename)
         range_n_clusters = range(2,30,3)
 
     return X, y, label, range_n_clusters
 
-def saveXt(label, method, Xt, colprefix):
+def saveXt(label, method, Xt, colprefix, istest=False):
     print("Saving Xt...")
     ncolumns = Xt.shape[1]
     columns = map(lambda x: "%s%d" % (colprefix, x), np.arange(ncolumns)+1)
     filename = '%s-%s-Xt.csv' % (label.replace(" ", "-"), method)
+    if istest:
+        filename = '%s-%s-test-Xt.csv' % (label.replace(" ", "-"), method)
     with open(filename, 'wb') as xf:
         xf.write(','.join(columns)+'\n')
         np.savetxt(xf, Xt, delimiter=',', fmt='%.10f' )

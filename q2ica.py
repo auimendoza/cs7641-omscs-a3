@@ -53,9 +53,11 @@ reconstructimages = False
 usen = [15, 112]
 for i in [1, 2]:
   print("="*10)
-  X, y, label, n_components_range, range_n_clusters = getDataset(i)
-  applyICA(label, method, X, n_components_range, reconstructimages)
-  Xt = reduceDim(method, X, usen[i-1])
-  saveXt(label, method, Xt, "IC")
+  for istest in[False, True]:
+    X, y, label, n_components_range, range_n_clusters = getDataset(i, istest)
+    if not istest:
+      applyICA(label, method, X, n_components_range, reconstructimages)
+    Xt = reduceDim(method, X, usen[i-1])
+    saveXt(label, method, Xt, "IC", istest)
   reconstructimages = True
   print("done.")
