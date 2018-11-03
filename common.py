@@ -15,21 +15,21 @@ def getDataset(id, istest=False):
     label = ''
     range_n_clusters = []
     if id == 1:
-        print("Reading credit card data...")
+        label = 'Credit Card'
         filename = 'cctrain.csv'
         if istest:
             filename = 'cctest.csv'
+        print("Reading %s %s data..." % (label, 'test' if istest else ''))
         data = pd.read_csv(filename)
-        label = 'Credit Card'
         n_components_range = range(1,data.shape[1])
         range_n_clusters = range(2, 11)
     if id == 2:
-        print("Reading sign language data...")
+        label = 'Sign Language'
         filename = 'sltrain.csv'
         if istest:
             filename = 'sltest.csv'
+        print("Reading %s %s data..." % (label, 'test' if istest else ''))
         data = pd.read_csv(filename)
-        label = 'Sign Language'
         frange = np.arange(1,data.shape[1])
         n_components_range = frange[np.mod(frange, 56) == 0].tolist()
         range_n_clusters = np.linspace(5,30,10, dtype='int').tolist()
@@ -43,7 +43,7 @@ def getReducedX(id, method, istest=False):
     filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
     if istest:
         filename = '%s-%s-test-Xt.csv' % (label.replace(" ", "-"), method)
-    print("Reading %s-reduced %s data..." % (method, label))
+    print("Reading %s-reduced %s %s data..." % (method, label, 'test' if istest else ''))
     X = pd.read_csv(filename)
 
     if id == 1:
@@ -303,8 +303,7 @@ def plot_2bar(xdata1, xdata2, legends, xlabels, ylim, ylabel, title, figname):
     n = len(vals)
     _X = np.arange(len(xlabels))
     for i in range(n):
-        plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
-                    width=width/float(n), align="edge")   
+        plt.bar(_X - width/2. + i/float(n)*width, vals[i], width=width/float(n), align="edge")   
         plt.xticks(_X, xlabels)
     plt.ylim(ylim[0], ylim[1])
     plt.ylabel(ylabel)
@@ -335,3 +334,7 @@ def plot_2axis(y1, y2, x, ylabel1, ylabel2, xlabel, title, figname):
     fig = plt.gcf()
     fig.savefig(figname, bbox_inches="tight")
     plt.close()
+
+def titlecase(title):
+    words = title.split()
+    return ' '.join([w.capitalize() for w in words])
