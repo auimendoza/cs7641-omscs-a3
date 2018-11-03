@@ -35,20 +35,24 @@ def getDataset(id):
 def getReducedX(id, method):
     X = None
     label = ''
+    _, y, _, _, _ = getDataset(id)
     if id == 1:
         label = 'Credit Card'
         filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
-        print("Reading %s reduced %s data..." % (method.lower(), label.lower()))
+        print("Reading %s-reduced %s data..." % (method, label))
         X = pd.read_csv(filename)
+        range_n_clusters = range(2,11)
     if id == 2:
         label = 'Sign Language'
         filename = "%s-%s-Xt.csv" % (label.replace(" ", "-"), method)
-        print("Reading %s reduced %s data..." % (method.lower(), label.lower()))
+        print("Reading %s reduced %s data..." % (method, label))
         X = pd.read_csv(filename)
+        range_n_clusters = range(2,30,3)
 
-    return X
+    return X, y, label, range_n_clusters
 
 def saveXt(label, method, Xt, colprefix):
+    print("Saving Xt...")
     ncolumns = Xt.shape[1]
     columns = map(lambda x: "%s%d" % (colprefix, x), np.arange(ncolumns)+1)
     filename = '%s-%s-Xt.csv' % (label.replace(" ", "-"), method)
@@ -60,18 +64,19 @@ def reconstruct(component,X):
     if sps.issparse(component):
         W = component.todense()
     p = pinv(W)
-    print("p", p.shape)
-    print("W", W.shape)
-    print("X", X.shape)
     r = np.dot(np.dot(p,W),(X.T)).T # Unproject projected data
     return r
 
 def reconstructit(component, X):
+    print("reconstructing X")
     ax = np.dot(X, component.todense())
     scaler = MinMaxScaler()
     return scaler.fit_transform(ax)
 
-def plot_clusters(label, method, methodname, X, y, nclasses, components):
+def plot_clusters_save(label, method, methodname, X, y, nclasses, components, figname):
+    print("plot clusters...")
+    if X.shape[1] < 3:
+        return
     c0 = components[0]
     c1 = components[1]
     c2 = components[2]
@@ -86,8 +91,12 @@ def plot_clusters(label, method, methodname, X, y, nclasses, components):
     ax.set_zlabel(X.columns[c2])
     plt.title("%s %s Clusters (k=%d)" % (label, methodname, nclasses))
     plt.gcf()
-    plt.savefig("%s-%s-clusters.png" % (label.replace(" ", "-"), method))
+    plt.savefig(figname)
     plt.close()
+
+def plot_clusters(label, method, methodname, X, y, nclasses, components):
+    figname = "%s-%s-clusters.png" % (label.replace(" ", "-"), method)
+    plot_clusters_save(label, method, methodname, X, y, nclasses, components, figname)
 
 def plot_scree(label, method, ver, n_components=None):
     print("plot scree...")
@@ -166,7 +175,8 @@ def plot_pdiff(label, method, pdiffms, pdiffstds, n_components):
     plt.savefig("%s-%s-pdiff.png" % (label.replace(" ", "-"), method))
     plt.close()
 
-def plot_silhscores(label, plotx, ploty, clustermethods):
+def plot_silhscores_save(label, plotx, ploty, clustermethods, figname):
+    print("plot silhouette scores")
     plt.plot(plotx[0], ploty[0], '.-')
     plt.plot(plotx[1], ploty[1], '.-')
     plt.ylabel("Silhouette Score")
@@ -174,10 +184,15 @@ def plot_silhscores(label, plotx, ploty, clustermethods):
     plt.title("%s Data: Silhouette Score" % (label.replace("-", " ")))
     plt.legend(clustermethods, loc="best")
     plt.gcf()
-    plt.savefig("%s-score.png" % (label.replace(" ", "-")))
+    plt.savefig(figname)
     plt.close()
 
+def plot_silhscores(label, plotx, ploty, clustermethods):
+    figname = "%s-score.png" % (label.replace(" ", "-"))
+    plot_silhscores_save(label, plotx, ploty, clustermethods, figname)
+
 def plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname):
+    print("plot %s..." % (title))
     plt.bar(xticks, yvalues)
     if len(xticks) > 20:
         nxt = np.array(xticks)
@@ -191,9 +206,13 @@ def plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname):
     plt.savefig(figname)
     plt.close()
 
-def plot_silh(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values):
+def plot_silh_save(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values, figname):
+    print("plot silhouttes and clusters...")
     # Create a subplot with 1 row and 2 columns
-    fig, (ax1, ax2) = plt.subplots(1, 2)
+    if X.shape[1] == 1:
+        fig, ax1 = plt.subplots()
+    else:
+        fig, (ax1, ax2) = plt.subplots(1, 2)
     fig.set_size_inches(18, 7)
 
     # The 1st subplot is the silhouette plot
@@ -237,55 +256,62 @@ def plot_silh(label, method, name, n_clusters, X, cluster_labels, clusterer, sil
     ax1.set_yticks([])  # Clear the yaxis labels / ticks
     ax1.set_xticks([-0.1, 0, 0.2, 0.4, 0.6, 0.8, 1])
 
-    # 2nd Plot showing the actual clusters formed
-    colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
-    ax2.scatter(X.iloc[:, 0], X.iloc[:, 1], marker='.', s=30, lw=0, alpha=0.7,
-                c=colors, edgecolor='k')
+    if X.shape[1] > 1:
+        # 2nd Plot showing the actual clusters formed
+        colors = cm.nipy_spectral(cluster_labels.astype(float) / n_clusters)
+        ax2.scatter(X.iloc[:, 0], X.iloc[:, 1], marker='.', s=30, lw=0, alpha=0.7,
+                    c=colors, edgecolor='k')
 
-    if method == 'KM':
-        # Labeling the clusters
-        centers = clusterer.cluster_centers_
-        # Draw white circles at cluster centers
-        ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
-                    c="white", alpha=1, s=200, edgecolor='k')
+        if method == 'KM':
+            # Labeling the clusters
+            centers = clusterer.cluster_centers_
+            # Draw white circles at cluster centers
+            ax2.scatter(centers[:, 0], centers[:, 1], marker='o',
+                        c="white", alpha=1, s=200, edgecolor='k')
 
-        for i, c in enumerate(centers):
-            ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
-                        s=50, edgecolor='k')
+            for i, c in enumerate(centers):
+                ax2.scatter(c[0], c[1], marker='$%d$' % i, alpha=1,
+                            s=50, edgecolor='k')
 
-    ax2.set_title("The visualization of the clustered data.")
-    ax2.set_xlabel("Feature space for the 1st feature")
-    ax2.set_ylabel("Feature space for the 2nd feature")
+        ax2.set_title("The visualization of the clustered data.")
+        ax2.set_xlabel("Feature space for the 1st feature")
+        ax2.set_ylabel("Feature space for the 2nd feature")
 
     plt.suptitle(("Silhouette analysis for %s clustering on %s data "
                   "with n_clusters = %d\nSilhoutte average %.3f" % (name, label.replace("-", " "), n_clusters, silhouette_avg)),
                   fontsize=14, fontweight='bold')
     plt.gcf()
-    plt.savefig(label.replace(" ", "-")+'-'+method+'-'+str(n_clusters)+'.png')
+    plt.savefig(figname)
     plt.close()
+    
+def plot_silh(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values):
+    figname = label.replace(" ", "-")+'-'+method+'-'+str(n_clusters)+'.png'
+    plot_silh_save(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values, figname)
 
 def plot_2bar(xdata1, xdata2, legends, xlabels, ylim, ylabel, title, figname):
-        #data1 = {'cat1': [vals1], 'cat2': [vals1]}
-        #data2 = {'cat1': [vals2], 'cat2': [vals2]}
-        #legends = [vals1name, vals2name]
-        width=0.8
-        vals = [xdata1, xdata2]
+    #data1 = {'cat1': [vals1], 'cat2': [vals1]}
+    #data2 = {'cat1': [vals2], 'cat2': [vals2]}
+    #legends = [vals1name, vals2name]
+    print("plot %s..." % (title))
+    width=0.8
+    vals = [xdata1, xdata2]
 
-        n = len(vals)
-        _X = np.arange(len(xlabels))
-        for i in range(n):
-            plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
-                        width=width/float(n), align="edge")   
-            plt.xticks(_X, xlabels)
-        plt.ylim(ylim[0], ylim[1])
-        plt.ylabel(ylabel)
-        plt.legend(legends)
-        plt.title(title)
-        plt.gcf()
-        plt.savefig(figname)
-        plt.close()
+    n = len(vals)
+    _X = np.arange(len(xlabels))
+    for i in range(n):
+        plt.bar(_X - width/2. + i/float(n)*width, vals[i], 
+                    width=width/float(n), align="edge")   
+        plt.xticks(_X, xlabels)
+    plt.ylim(ylim[0], ylim[1])
+    plt.ylabel(ylabel)
+    plt.legend(legends)
+    plt.title(title)
+    plt.gcf()
+    plt.savefig(figname)
+    plt.close()
 
 def plot_2axis(y1, y2, x, ylabel1, ylabel2, xlabel, title, figname):
+    print("plot %s..." % (title))
     fig, ax1 = plt.subplots()
     pts1 = ax1.plot(x, y1, 'o-', label=ylabel1)
     ax1.set_xlabel(xlabel)

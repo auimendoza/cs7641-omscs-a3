@@ -1,0 +1,278 @@
+asterix:assign3 auimendoza$ python q3.py
+Reading credit card data...
+Reading PCA-reduced Credit Card data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.3118735240829423
+For n_clusters = 3 The average silhouette_score is : 0.3315259226396914
+For n_clusters = 4 The average silhouette_score is : 0.18268389472944116
+For n_clusters = 5 The average silhouette_score is : 0.1867058173884711
+For n_clusters = 6 The average silhouette_score is : 0.11910461074884399
+For n_clusters = 7 The average silhouette_score is : 0.107377082621661
+For n_clusters = 8 The average silhouette_score is : 0.10122205339764116
+For n_clusters = 9 The average silhouette_score is : 0.10267803780035678
+For n_clusters = 10 The average silhouette_score is : 0.10497978406506642
+highest silhoutte score = 0.3315259226
+n_clusters with highest score = 3
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.2286623683871256
+For n_clusters = 3 The average silhouette_score is : 0.26521713075770276
+For n_clusters = 4 The average silhouette_score is : -0.03809408217696913
+For n_clusters = 5 The average silhouette_score is : -0.04881326546458653
+For n_clusters = 6 The average silhouette_score is : -0.09955535711568135
+For n_clusters = 7 The average silhouette_score is : -0.05247741784106455
+For n_clusters = 8 The average silhouette_score is : -0.050621628348563485
+For n_clusters = 9 The average silhouette_score is : -0.07341800533517409
+For n_clusters = 10 The average silhouette_score is : -0.021025265737985546
+highest silhoutte score = 0.2652171308
+n_clusters with highest score = 3
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+plot silhouette scores
+Reading sign language data...
+Reading PCA reduced Sign Language data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.1831823532074915
+For n_clusters = 5 The average silhouette_score is : 0.09905419522568333
+For n_clusters = 8 The average silhouette_score is : 0.08740724282395991
+For n_clusters = 11 The average silhouette_score is : 0.0713756340136506
+For n_clusters = 14 The average silhouette_score is : 0.07649131748893588
+For n_clusters = 17 The average silhouette_score is : 0.07180130818954676
+For n_clusters = 20 The average silhouette_score is : 0.07325180721812231
+For n_clusters = 23 The average silhouette_score is : 0.07287464695745632
+For n_clusters = 26 The average silhouette_score is : 0.07374108379721005
+For n_clusters = 29 The average silhouette_score is : 0.06911803032039442
+highest silhoutte score = 0.1831823532
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.11447473249976091
+For n_clusters = 5 The average silhouette_score is : 0.04555222257535429
+For n_clusters = 8 The average silhouette_score is : 0.027000669628348115
+For n_clusters = 11 The average silhouette_score is : 0.017150292796869457
+For n_clusters = 14 The average silhouette_score is : 0.023824083381601694
+For n_clusters = 17 The average silhouette_score is : 0.02552413602361585
+For n_clusters = 20 The average silhouette_score is : 0.023697851224267225
+For n_clusters = 23 The average silhouette_score is : 0.02599463570852994
+For n_clusters = 26 The average silhouette_score is : 0.024374864379335306
+For n_clusters = 29 The average silhouette_score is : 0.022968273979107796
+highest silhoutte score = 0.1144747325
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+plot silhouette scores
+Reading credit card data...
+Reading ICA-reduced Credit Card data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.07186129329959083
+For n_clusters = 3 The average silhouette_score is : 0.07557330389970911
+For n_clusters = 4 The average silhouette_score is : 0.07331949708748967
+For n_clusters = 5 The average silhouette_score is : 0.07471839127645483
+For n_clusters = 6 The average silhouette_score is : 0.07141742863779728
+For n_clusters = 7 The average silhouette_score is : 0.07512171779294836
+For n_clusters = 8 The average silhouette_score is : 0.0719104869313101
+For n_clusters = 9 The average silhouette_score is : 0.08043617997607383
+For n_clusters = 10 The average silhouette_score is : 0.07670184816021376
+highest silhoutte score = 0.0804361800
+n_clusters with highest score = 9
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.30914332305631215
+For n_clusters = 3 The average silhouette_score is : 0.2039642778940711
+For n_clusters = 4 The average silhouette_score is : -0.0029081602999188783
+For n_clusters = 5 The average silhouette_score is : -0.0062989163195637365
+For n_clusters = 6 The average silhouette_score is : -0.0043894272557243015
+For n_clusters = 7 The average silhouette_score is : -0.02263025065920675
+For n_clusters = 8 The average silhouette_score is : -0.02177294449755403
+For n_clusters = 9 The average silhouette_score is : -0.004608850253721735
+For n_clusters = 10 The average silhouette_score is : 0.020570643657594798
+highest silhoutte score = 0.3091433231
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+method GM, reduced by ICA, scorer accuracy, score 0.012
+plot silhouette scores
+Reading sign language data...
+Reading ICA reduced Sign Language data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.06477098520143641
+For n_clusters = 5 The average silhouette_score is : 0.009406219282107749
+For n_clusters = 8 The average silhouette_score is : 0.009230642418496878
+For n_clusters = 11 The average silhouette_score is : 0.003089518951874156
+For n_clusters = 14 The average silhouette_score is : 0.018618418672562705
+For n_clusters = 17 The average silhouette_score is : 0.015131626275983091
+For n_clusters = 20 The average silhouette_score is : 0.006112108220133686
+For n_clusters = 23 The average silhouette_score is : 0.024052519989634077
+For n_clusters = 26 The average silhouette_score is : 0.02005137517596045
+For n_clusters = 29 The average silhouette_score is : 0.019981873565980017
+highest silhoutte score = 0.0647709852
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.24301623735598962
+For n_clusters = 5 The average silhouette_score is : -0.007771113633317756
+For n_clusters = 8 The average silhouette_score is : -0.011091564865543779
+For n_clusters = 11 The average silhouette_score is : 0.0013747677492688705
+For n_clusters = 14 The average silhouette_score is : 0.003277122940598383
+For n_clusters = 17 The average silhouette_score is : -0.007283516190742979
+For n_clusters = 20 The average silhouette_score is : -0.0013428709834843327
+For n_clusters = 23 The average silhouette_score is : 0.0023324927818945415
+For n_clusters = 26 The average silhouette_score is : 0.005233099613102428
+For n_clusters = 29 The average silhouette_score is : 0.018259758064015554
+highest silhoutte score = 0.2430162374
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+plot silhouette scores
+Reading credit card data...
+Reading RP-reduced Credit Card data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.3348742827733097
+For n_clusters = 3 The average silhouette_score is : 0.3501259238661084
+For n_clusters = 4 The average silhouette_score is : 0.2420250357231332
+For n_clusters = 5 The average silhouette_score is : 0.15474740892682667
+For n_clusters = 6 The average silhouette_score is : 0.14219039265300112
+For n_clusters = 7 The average silhouette_score is : 0.13684136372070735
+For n_clusters = 8 The average silhouette_score is : 0.13922938745117783
+For n_clusters = 9 The average silhouette_score is : 0.13204070550339245
+For n_clusters = 10 The average silhouette_score is : 0.1235758184849245
+highest silhoutte score = 0.3501259239
+n_clusters with highest score = 3
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.31230550439720794
+For n_clusters = 3 The average silhouette_score is : 0.30352744127317377
+For n_clusters = 4 The average silhouette_score is : 0.16773505753784704
+For n_clusters = 5 The average silhouette_score is : 0.17468837362574113
+For n_clusters = 6 The average silhouette_score is : 0.06104123380416333
+For n_clusters = 7 The average silhouette_score is : -0.0381050403307173
+For n_clusters = 8 The average silhouette_score is : -0.019921477132509385
+For n_clusters = 9 The average silhouette_score is : -0.01946410570304133
+For n_clusters = 10 The average silhouette_score is : -0.02569475179030364
+highest silhoutte score = 0.3123055044
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+method GM, reduced by RP, scorer accuracy, score 0.013
+plot silhouette scores
+Reading sign language data...
+Reading RP reduced Sign Language data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.1825891962251297
+For n_clusters = 5 The average silhouette_score is : 0.09383770264886986
+For n_clusters = 8 The average silhouette_score is : 0.07923803471574409
+For n_clusters = 11 The average silhouette_score is : 0.0682067448123812
+For n_clusters = 14 The average silhouette_score is : 0.06887579101248884
+For n_clusters = 17 The average silhouette_score is : 0.060140679701002134
+For n_clusters = 20 The average silhouette_score is : 0.06827858771134442
+For n_clusters = 23 The average silhouette_score is : 0.06388480775940898
+For n_clusters = 26 The average silhouette_score is : 0.0577144655153284
+For n_clusters = 29 The average silhouette_score is : 0.06681054701311631
+highest silhoutte score = 0.1825891962
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.10408888845752605
+For n_clusters = 5 The average silhouette_score is : 0.02711243315606346
+For n_clusters = 8 The average silhouette_score is : 0.010036065164165735
+For n_clusters = 11 The average silhouette_score is : 0.01534386725955745
+For n_clusters = 14 The average silhouette_score is : 0.022688866335680506
+For n_clusters = 17 The average silhouette_score is : 0.027988164383199177
+For n_clusters = 20 The average silhouette_score is : 0.03242117086254394
+For n_clusters = 23 The average silhouette_score is : 0.0376981219778043
+For n_clusters = 26 The average silhouette_score is : 0.04214793951432391
+For n_clusters = 29 The average silhouette_score is : 0.05216366798418097
+highest silhoutte score = 0.1040888885
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+plot silhouette scores
+Reading credit card data...
+Reading LDA-reduced Credit Card data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.9328644635696755
+For n_clusters = 3 The average silhouette_score is : 0.9076895918023804
+For n_clusters = 4 The average silhouette_score is : 0.8907667802225674
+For n_clusters = 5 The average silhouette_score is : 0.6664905487297269
+For n_clusters = 6 The average silhouette_score is : 0.5572353193119616
+For n_clusters = 7 The average silhouette_score is : 0.5574463089084312
+For n_clusters = 8 The average silhouette_score is : 0.5159228786318757
+For n_clusters = 9 The average silhouette_score is : 0.5402719323027789
+For n_clusters = 10 The average silhouette_score is : 0.5399524327934109
+highest silhoutte score = 0.9328644636
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+method KM, reduced by LDA, scorer f1, score 0.770
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.8492684581303416
+For n_clusters = 3 The average silhouette_score is : 0.6442231088188591
+For n_clusters = 4 The average silhouette_score is : 0.6412282912619589
+For n_clusters = 5 The average silhouette_score is : 0.6357330323926929
+For n_clusters = 6 The average silhouette_score is : 0.6666367915925254
+For n_clusters = 7 The average silhouette_score is : 0.5730681211920539
+For n_clusters = 8 The average silhouette_score is : 0.5073299167846995
+For n_clusters = 9 The average silhouette_score is : 0.5170701249577873
+For n_clusters = 10 The average silhouette_score is : 0.5354638938789711
+highest silhoutte score = 0.8492684581
+n_clusters with highest score = 2
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+method GM, reduced by LDA, scorer accuracy, score 0.690
+plot silhouette scores
+Reading sign language data...
+Reading LDA reduced Sign Language data...
+doing KM...
+For n_clusters = 2 The average silhouette_score is : 0.12231455726684577
+For n_clusters = 5 The average silhouette_score is : 0.16698153630862994
+For n_clusters = 8 The average silhouette_score is : 0.21396347627323675
+For n_clusters = 11 The average silhouette_score is : 0.25720934792139805
+For n_clusters = 14 The average silhouette_score is : 0.2863781995987622
+For n_clusters = 17 The average silhouette_score is : 0.3271874695024913
+For n_clusters = 20 The average silhouette_score is : 0.3623292786198684
+For n_clusters = 23 The average silhouette_score is : 0.4031777992527175
+For n_clusters = 26 The average silhouette_score is : 0.37058772017993674
+For n_clusters = 29 The average silhouette_score is : 0.3274519911083211
+highest silhoutte score = 0.4031777993
+n_clusters with highest score = 23
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+doing GM...
+For n_clusters = 2 The average silhouette_score is : 0.2136896105463609
+For n_clusters = 5 The average silhouette_score is : 0.16536108127192115
+For n_clusters = 8 The average silhouette_score is : 0.1806841763693791
+For n_clusters = 11 The average silhouette_score is : 0.21456964285860772
+For n_clusters = 14 The average silhouette_score is : 0.27736202845772984
+For n_clusters = 17 The average silhouette_score is : 0.3228946168718437
+For n_clusters = 20 The average silhouette_score is : 0.35538259575009445
+For n_clusters = 23 The average silhouette_score is : 0.3634980586232628
+For n_clusters = 26 The average silhouette_score is : 0.38666513077753456
+For n_clusters = 29 The average silhouette_score is : 0.3601638429892719
+highest silhoutte score = 0.3866651308
+n_clusters with highest score = 26
+plotting...
+plot clusters...
+plot silhouttes and clusters...
+plot silhouette scores
+asterix:assign3 auimendoza$
