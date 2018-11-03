@@ -39,8 +39,8 @@ def applyICA(label, method, X, n_components, reconstructimages=False, seed=seed)
     print("total no of components = %d" % (len(k)))  
     print("no of components that are non-gaussian = %d" % (len(k[k>2.])))
 
-    plot_2axis(meank, ngratio, n_components, 'mean kurtosis', 'ratio non-gaussian to gaussian', 'no of components', 
-      '%s kurtosis and non-gaussian components' % (method), 
+    plot_2axis(meank, ngratio, n_components, 'mean kurtosis', 'n non-gaussian/n components', 'n components', 
+      '%s kurtosis and non-gaussian sources' % (method), 
       '%s-%s-kurt-ng.png' % (label.replace(" ", "-"), method))
 
 def reduceDim(method, X, n):
