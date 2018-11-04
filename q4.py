@@ -60,8 +60,10 @@ for id in [1, 2]:
             scores[name][drmethod] = scorer(y[name], ypred)
             print("%s %s %s: %.3f" % (drmethod, name, scorer_name, scores[name][drmethod]))
   
-    figname = ("%s-%s.png" % (label, scorer_name)).replace(" ", "-")
-    plot_2bar(scores['train'].values(), scores['test'].values(), ['train', 'test'], drmethods, [0., 1.], scorer_name, '%s Train vs Test %s' % (label, titlecase(scorer_name)), figname)
+    figname = ("%s-%s-q4.png" % (label, scorer_name)).replace(" ", "-")
+    plot_2bar(scores['train'].values(), scores['test'].values(), 
+        ['train', 'test'], drmethods, [0., 1.], scorer_name, 
+        '%s Train vs Test %s\n(Reduced)' % (label, titlecase(scorer_name)), figname)
 
 print
 print("==========")
