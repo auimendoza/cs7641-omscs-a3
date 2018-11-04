@@ -53,7 +53,7 @@ def getReducedX(id, method, istest=False):
 
     return X, y, label, range_n_clusters
 
-def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False):
+def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False, usecolumns=[]):
     X, y, label, _ = getReducedX(id, drmethod, istest)
     print("Retrieving %s-reduced and %s-clustered %s %s data..." % (drmethod, clustermethod, label, 'test' if istest else 'training'))
 
@@ -69,7 +69,10 @@ def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False):
     clustersdf = pd.DataFrame(eclusters, columns=clustercolumns)
 
     Xrc = pd.concat([X, clustersdf], axis=1)
-
+    columns = Xrc.columns.tolist()
+    if usecolumns and usecolumns != Xrc.columns.tolist():
+        for col in (set(usecolumns)-set(columns)):
+            Xrc[col] = 0.
     return Xrc, y, label
 
 def saveXt(label, method, Xt, colprefix, istest=False):

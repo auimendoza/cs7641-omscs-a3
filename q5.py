@@ -78,10 +78,11 @@ for id in [1, 2]:
 
     for clustermethod in clustermethods:
         for drmethod in drmethods:
+            columns = []
             for name, istest in traintest:
 
-                Xrc, y, label = getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest)
-
+                Xrc, y, label = getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest, columns)
+                columns = Xrc.columns.tolist()
                 if not istest:
                     print("Training...")
                     start = timeit.default_timer()
