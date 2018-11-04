@@ -91,7 +91,6 @@ def reconstruct(component,X):
     return r
 
 def reconstructit(component, X):
-    print("reconstructing X")
     ax = np.dot(X, component.todense())
     scaler = MinMaxScaler()
     return scaler.fit_transform(ax)
