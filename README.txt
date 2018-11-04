@@ -19,17 +19,17 @@ files needed:
   cctrain.csv
   cctest.csv
 
-3. All code and csv files should be in the same director.
+3. All code and csv files should be in the same directory.
 
 4. Run the scripts
-$ python q1.py 
-$ python q2pca.py 
-$ python q2rp.py 
-$ python q2ica.py 
-$ python q2lda.py 
-$ python q3.py 
-$ python q4.py 
-$ python q5.py 
+  $ python q1.py 
+  $ python q2pca.py 
+  $ python q2rp.py 
+  $ python q2ica.py 
+  $ python q2lda.py 
+  $ python q3.py 
+  $ python q4.py 
+  $ python q5.py 
 
 Notes:
 Versions used:
