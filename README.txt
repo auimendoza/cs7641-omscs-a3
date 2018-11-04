@@ -3,13 +3,25 @@ Fall 2018 - OMSCS
 Assignment 3: Unsupervised Learning and Dimensionality Reduction
 mmendoza32
 
-Download code and data from: 
+Steps to run project codes:
+
+1. Download code from: 
 https://github.gatech.edu/mmendoza32/cs7641-omscs-a3
 or
 https://github.com/auimendoza/cs7641-omscs-a3
 
-How to run project codes:
+2. Download data from:
+https://gatech.box.com/s/75tn8b37ldim80s0oiqrak4vlhbkn0d4
 
+files needed:
+  sltrain.csv
+  sltest.csv
+  cctrain.csv
+  cctest.csv
+
+3. All code and csv files should be in the same director.
+
+4. Run the scripts
 $ python q1.py 
 $ python q2pca.py 
 $ python q2rp.py 
