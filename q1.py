@@ -80,15 +80,11 @@ def cluster_silh_plot(prefix, clustermethod, range_n_clusters, X, plotdim, seed=
     return cluster_labels, silhouette_avgs
 
 scorers = [[f1_score, accuracy_score], ['f1', 'accuracy']]
-#plotdata = []
-#xlabels = []
 for id in [1,2]:
     X, y, label, _, range_n_clusters = getDataset(id)
-    #xlabels.append('%s\n(%s)' % (label, scorers[1][id-1]))
     plotx = []
     ploty = []
     plotcomponents = [[(1, 0, 2), (1, 0, 2)],[(91, 397, 611), (0, 1, 678)]]
-    #scores = []
     for i, m in enumerate(clustermethods):
         print ("doing %s..." % (m))
         cluster_labels, silhouette_avgs = cluster_silh_plot(label, m, range_n_clusters, X, plotcomponents[id-1][i])
@@ -98,8 +94,4 @@ for id in [1,2]:
         if (np.unique(cluster_labels).shape[0] == np.unique(y).shape[0]):
             score = scorers[0][id-1](y, cluster_labels)
             print("method %s, scorer %s, score %.3f" % (m, scorers[1][i], score))
-        #scores.append(score)
-    #plotdata.append(scores)
     plot_silhscores(label, plotx, ploty, clustermethods)
-#title = "Accuracy/F1 Score of Clustering Algorithms"
-#plot_2bar(plotdata[0], plotdata[1], clustermethods, xlabels, [0, 1], 'f1/accuracy score', title, 'q1score.png')

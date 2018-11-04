@@ -9,7 +9,7 @@ from common import *
 seed=42
 method='ICA'
 
-def applyICA(label, method, X, n_components, reconstructimages=False, seed=seed):
+def applyICA(label, method, X, n_components, usen, reconstructimages=False, seed=seed):
     print("doing %s..." % (method))
     mse = []
     firstimages = []
@@ -42,11 +42,14 @@ def applyICA(label, method, X, n_components, reconstructimages=False, seed=seed)
     plot_2axis(meank, ngratio, n_components, 'mean kurtosis', 'n non-gaussian/n components', 'n components', 
       '%s kurtosis and non-gaussian sources' % (method), 
       '%s-%s-kurt-ng.png' % (label.replace(" ", "-"), method))
+    
+    model = FastICA(n_components=usen, random_state=seed)
+    model = model.fit(X)
+    return model
 
-def reduceDim(method, X, n):
+def reduceDim(method, X, n, model):
     print("%s: reducing components to %d..." % (method, n))
-    model = FastICA(n_components=n, random_state=seed)
-    Xt = model.fit_transform(X)
+    Xt = model.transform(X)
     return Xt
 
 reconstructimages = False
@@ -56,8 +59,8 @@ for i in [1, 2]:
   for istest in[False, True]:
     X, y, label, n_components_range, range_n_clusters = getDataset(i, istest)
     if not istest:
-      applyICA(label, method, X, n_components_range, reconstructimages)
-    Xt = reduceDim(method, X, usen[i-1])
+      model = applyICA(label, method, X, n_components_range, usen[i-1], reconstructimages)
+    Xt = reduceDim(method, X, usen[i-1], model)
     saveXt(label, method, Xt, "IC", istest)
   reconstructimages = True
   print("done.")

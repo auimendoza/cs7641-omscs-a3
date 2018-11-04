@@ -8,7 +8,7 @@ from common import *
 seed=42
 method='PCA'
 
-def reduceDim(label, method, X, n_components, reconstructimages=False, usen=None, seed=seed):
+def applyPCA(label, method, X, n_components, reconstructimages=False, usen=None, seed=seed):
     print("doing %s..." % (method))
     mse = []
     firstimages = []
@@ -43,7 +43,8 @@ def reduceDim(label, method, X, n_components, reconstructimages=False, usen=None
     
     print("%s: reducing components to %d..." % (method, usen))
     model = PCA(n_components=usen, random_state=seed)
-    Xt = model.fit_transform(X)
+    model = model.fit(X)
+    Xt = model.transform(X)
     xticks = range(1,usen+1)
     yvalues = model.explained_variance_
     xlabel = 'principal components'
@@ -52,15 +53,23 @@ def reduceDim(label, method, X, n_components, reconstructimages=False, usen=None
     figname = "%s-pca-eigenvalues.png" % (label.replace(" ", "-"))
     plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname)
 
-    return Xt
+    return Xt, model
+
+def reduceDim(X, model):
+    return model.transform(X)
 
 reconstructimages = False
 usen = [18, 111]
 for i in [1, 2]:
   print("="*10)
+  model = None
+  Xt = None
   for istest in [False, True]:
     X, y, label, n_components_range, _ = getDataset(i, istest)
-    Xt = reduceDim(label, method, X, n_components_range, reconstructimages, usen[i-1])
+    if not istest:
+      Xt, model = applyPCA(label, method, X, n_components_range, reconstructimages, usen[i-1])
+    else:
+      Xt = reduceDim(X, model)    
     saveXt(label, method, Xt, "PC", istest)
     reconstructimages = False
   reconstructimages = True

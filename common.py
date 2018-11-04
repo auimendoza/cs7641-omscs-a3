@@ -53,7 +53,7 @@ def getReducedX(id, method, istest=False):
 
     return X, y, label, range_n_clusters
 
-def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False, usecolumns=[]):
+def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False, clustercolumns=[], encoder=None):
     X, y, label, _ = getReducedX(id, drmethod, istest)
     print("Retrieving %s-reduced and %s-clustered %s %s data..." % (drmethod, clustermethod, label, 'test' if istest else 'training'))
 
@@ -62,18 +62,26 @@ def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False, usec
         cluster_label_file = "%s-%s-%s-test-cluster-labels.csv" % (label.replace(" ","-"), clustermethod, drmethod)
     clusters = pd.read_csv(cluster_label_file, header=None, names=['label'])
 
-    enc = OneHotEncoder()
-    eclusters = enc.fit_transform(clusters).todense()
-    clustercolumns = ["CL%d" % i for i in range(eclusters.shape[1])]
-
-    clustersdf = pd.DataFrame(eclusters, columns=clustercolumns)
+    if istest:
+        eclusters = encoder.transform(clusters).todense()
+        clustersdf = pd.DataFrame(eclusters, columns=clustercolumns)
+    else:
+        encoder = OneHotEncoder()
+        encoder = encoder.fit(clusters)
+        eclusters = encoder.transform(clusters).todense()
+        clustercolumns = ["CL%d" % i for i in range(eclusters.shape[1])]
+        clustersdf = pd.DataFrame(eclusters, columns=clustercolumns)
 
     Xrc = pd.concat([X, clustersdf], axis=1)
-    columns = Xrc.columns.tolist()
+    return Xrc, y, label, encoder, clustercolumns
+
+"""    columns = Xrc.columns.tolist()
     if usecolumns and usecolumns != Xrc.columns.tolist():
         for col in (set(usecolumns)-set(columns)):
             Xrc[col] = 0.
-    return Xrc, y, label
+        for col in (set(columns)-set(usecolumns)):
+            Xrc.drop([col], axis=1)
+"""            
 
 def saveXt(label, method, Xt, colprefix, istest=False):
     print("Saving Xt...")

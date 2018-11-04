@@ -24,32 +24,32 @@ print("=========")
 drmethods = ['PCA', 'ICA', 'RP', 'LDA']
 clustermethods = ['KM', 'GM']
 traintest = [['train', False], ['test', True]]
-drnclusters = [{
+drnclusters = {
     'PCA': {'KM': 3, 'GM': 3},
     'ICA': {'KM': 9, 'GM': 2},
     'RP':  {'KM': 3, 'GM': 2},
     'LDA': {'KM': 2, 'GM': 2}
-    },{
-    'PCA': {'KM': 2, 'GM': 2},
-    'ICA': {'KM': 2, 'GM': 2},
-    'RP':  {'KM': 2, 'GM': 2},
-    'LDA': {'KM': 23, 'GM': 26}
     }
-]
 
 # cluster test dataset
 print("Clustering the test set")
 print("-"*10)
 seed = 42
-for id in [1,2]:
-    for drmethod in drmethods:
-        X, y, label, _ = getReducedX(id, drmethod, istest=True)
+for drmethod in drmethods:
+    for id in [1,2]:
+        Xtrain, ytrain, label, _ = getReducedX(id, drmethod, istest=False)
+        Xtest, ytest, label, _ = getReducedX(id, drmethod, istest=True)
         for clustermethod in clustermethods:
+            clusterer = None
             if clustermethod == 'GM':
-                clusterer = GaussianMixture(n_components=drnclusters[id-1][drmethod][clustermethod], random_state=seed)        
+                clusterer = GaussianMixture(n_components=drnclusters[drmethod][clustermethod], random_state=seed)        
             if clustermethod == 'KM':
-                clusterer = KMeans(n_clusters=drnclusters[id-1][drmethod][clustermethod], random_state=seed)
-            cluster_labels = clusterer.fit(X).predict(X)
+                clusterer = KMeans(n_clusters=drnclusters[drmethod][clustermethod], random_state=seed)
+            clusterer = clusterer.fit(Xtrain)
+            cluster_labels = clusterer.predict(Xtrain)
+            print("Saving %s %s %s cluster labels to csv..." % (label, drmethod, clustermethod))
+            np.savetxt("%s-%s-%s-cluster-labels.csv" % (label.replace(" ", "-"), clustermethod, drmethod), cluster_labels, fmt="%d")
+            cluster_labels = clusterer.predict(Xtest)
             print("Saving %s %s %s test cluster labels to csv..." % (label, drmethod, clustermethod))
             np.savetxt("%s-%s-%s-test-cluster-labels.csv" % (label.replace(" ", "-"), clustermethod, drmethod), cluster_labels, fmt="%d")
 print('done.')
@@ -79,10 +79,9 @@ for id in [1, 2]:
     for clustermethod in clustermethods:
         for drmethod in drmethods:
             columns = []
+            enc = None
             for name, istest in traintest:
-
-                Xrc, y, label = getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest, columns)
-                columns = Xrc.columns.tolist()
+                Xrc, y, label, enc, columns = getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest, columns, enc)
                 if not istest:
                     print("Training...")
                     start = timeit.default_timer()

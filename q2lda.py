@@ -8,12 +8,14 @@ from common import *
 seed=42
 method='LDA'
 
-def reduceDim(label, method, X, y, scorer, seed=seed):
+def applyLDA(label, method, X, y, scorer, istest=False, model=None, seed=seed):
     print("doing %s..." % (method))
     score = None
 
-    model = LinearDiscriminantAnalysis()
-    Xt = model.fit_transform(X, y)
+    if not istest:
+      model = LinearDiscriminantAnalysis()
+      model = model.fit(X, y)
+    Xt = model.transform(X)
     ypred = model.predict(X)
 
     print("done. plotting...")
@@ -32,7 +34,7 @@ def reduceDim(label, method, X, y, scorer, seed=seed):
       score = f1_score(y, ypred)
       print("f1 score = %.3f" % (score))
     
-    return Xt, score
+    return Xt, score, model
 
 def plot_scores(scores, labels, istest):
     figname = "%s-score.png" % (method)
@@ -51,6 +53,7 @@ def plot_scores(scores, labels, istest):
     plt.savefig(figname, bbox_inches = "tight")
     plt.close()
 
+models = []
 for istest in [False, True]:
   scorer = "f1"
   scores = []
@@ -58,10 +61,14 @@ for istest in [False, True]:
   for i in [1, 2]:
     print("="*10)
     X, y, label, _, _ = getDataset(i, istest)
-    Xt, score = reduceDim(label, method, X, y, scorer)
+    if not istest:
+      Xt, score, model = applyLDA(label, method, X, y, scorer, istest, None)
+      models.append(model)
+    else:
+      Xt, score, model = applyLDA(label, method, X, y, scorer, istest, models[i-1])
     saveXt(label, method, Xt, "LD", istest)
     scores.append(score)
     labels.append(label)
     scorer = "accuracy"
-    print("done.")
   plot_scores(scores, labels, istest)
+print("done.")

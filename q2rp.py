@@ -10,7 +10,7 @@ from common import *
 
 method='RP'
 
-def applyRP(label, method, X, n_components, reconstructimages=False):
+def applyRP(label, method, X, n_components, usen, reconstructimages=False):
     print("doing %s..." % (method))
     pdiffms = []
     pdiffstds = []
@@ -44,10 +44,13 @@ def applyRP(label, method, X, n_components, reconstructimages=False):
       firstimages.insert(0, np.array(X.iloc[0,:]))
       plot_first_images(firstimages, n_components, method, label)
 
-def reduceDim(method, X, n):
+    model = SparseRandomProjection(n_components=usen)
+    model = model.fit(X)
+    return model
+
+def reduceDim(method, X, n, model):
     print("%s: reducing components to %d..." % (method, n))
-    model = SparseRandomProjection(n_components=n)
-    Xt = model.fit_transform(X)
+    Xt = model.transform(X)
     return Xt
 
 def plot_jl_bounds(label, X):
@@ -82,13 +85,14 @@ reconstructimages = False
 usen = [11, 280]
 for i in [1, 2]:
   print("="*10)
+  model = None
   X, _, label, n_components_range, _ = getDataset(i)
   for j in range(5):
-    applyRP(label, method+str(j), X, n_components_range, reconstructimages)
+    model = applyRP(label, method+str(j), X, n_components_range, usen[i-1], reconstructimages)
   for istest in[False, True]:
     if istest:
       X, _, label, _, _ = getDataset(i, istest)
-    Xt = reduceDim(method, X, usen[i-1])
+    Xt = reduceDim(method, X, usen[i-1], model)
     saveXt(label, method, Xt, "RP", istest)
   reconstructimages = True
   plot_jl_bounds(label, X)
