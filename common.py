@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import scipy.sparse as sps
 from scipy.linalg import pinv
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 
 def getDataset(id, istest=False):
     n_components_range = []
@@ -52,6 +52,25 @@ def getReducedX(id, method, istest=False):
         range_n_clusters = range(2,30,3)
 
     return X, y, label, range_n_clusters
+
+def getReducedXwithEncodedLabels(id, drmethod, clustermethod, istest=False):
+    X, y, label, _ = getReducedX(id, drmethod, istest)
+    print("Retrieving %s-reduced and %s-clustered %s %s data..." % (drmethod, clustermethod, label, 'test' if istest else 'training'))
+
+    cluster_label_file = "%s-%s-%s-cluster-labels.csv" % (label.replace(" ","-"), clustermethod, drmethod)
+    if istest:
+        cluster_label_file = "%s-%s-%s-test-cluster-labels.csv" % (label.replace(" ","-"), clustermethod, drmethod)
+    clusters = pd.read_csv(cluster_label_file, header=None, names=['label'])
+
+    enc = OneHotEncoder()
+    eclusters = enc.fit_transform(clusters).todense()
+    clustercolumns = ["CL%d" % i for i in range(eclusters.shape[1])]
+
+    clustersdf = pd.DataFrame(eclusters, columns=clustercolumns)
+
+    Xrc = pd.concat([X, clustersdf], axis=1)
+
+    return Xrc, y, label
 
 def saveXt(label, method, Xt, colprefix, istest=False):
     print("Saving Xt...")
@@ -114,7 +133,7 @@ def plot_scree(label, method, ver, n_components=None):
     plt.legend(["Variance", "Cumulative Variance"], loc="best")
     plt.gcf()
     filename = '%s-%s-%d-scree.png' % (label.replace(" ", "-"), method, n)
-    plt.savefig(filename)
+    plt.savefig(filename, bbox_inches='tight')
     plt.close()
 
 def plot_re(label, method, mse, nc):
@@ -176,7 +195,7 @@ def plot_pdiff(label, method, pdiffms, pdiffstds, n_components):
     plt.ylabel("% difference pairwise distances")
     plt.title("%s %s Pairwise Distance Differences" % (label, method))
     plt.gcf()
-    plt.savefig("%s-%s-pdiff.png" % (label.replace(" ", "-"), method))
+    plt.savefig("%s-%s-pdiff.png" % (label.replace(" ", "-"), method), bbox_inches='tight')
     plt.close()
 
 def plot_silhscores_save(label, plotx, ploty, clustermethods, figname):
@@ -188,7 +207,7 @@ def plot_silhscores_save(label, plotx, ploty, clustermethods, figname):
     plt.title("%s Data: Silhouette Score" % (label.replace("-", " ")))
     plt.legend(clustermethods, loc="best")
     plt.gcf()
-    plt.savefig(figname)
+    plt.savefig(figname, bbox_inches='tight')
     plt.close()
 
 def plot_silhscores(label, plotx, ploty, clustermethods):
@@ -207,7 +226,7 @@ def plot_basic_bar(xticks, yvalues, xlabel, ylabel, title, figname):
     plt.ylabel(ylabel)
     plt.title(title)
     plt.gcf()
-    plt.savefig(figname)
+    plt.savefig(figname, bbox_inches='tight')
     plt.close()
 
 def plot_silh_save(label, method, name, n_clusters, X, cluster_labels, clusterer, silhouette_avg, sample_silhouette_values, figname):
@@ -310,7 +329,7 @@ def plot_2bar(xdata1, xdata2, legends, xlabels, ylim, ylabel, title, figname):
     plt.legend(legends)
     plt.title(title)
     plt.gcf()
-    plt.savefig(figname)
+    plt.savefig(figname, bbox_inches='tight')
     plt.close()
 
 def plot_2axis(y1, y2, x, ylabel1, ylabel2, xlabel, title, figname):
