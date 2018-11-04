@@ -62,5 +62,6 @@ for i in [1, 2]:
     X, y, label, n_components_range, _ = getDataset(i, istest)
     Xt = reduceDim(label, method, X, n_components_range, reconstructimages, usen[i-1])
     saveXt(label, method, Xt, "PC", istest)
+    reconstructimages = False
   reconstructimages = True
   print("done.")
