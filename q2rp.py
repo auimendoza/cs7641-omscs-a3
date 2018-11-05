@@ -94,6 +94,7 @@ for i in [1, 2]:
       X, _, label, _, _ = getDataset(i, istest)
     Xt = reduceDim(method, X, usen[i-1], model)
     saveXt(label, method, Xt, "RP", istest)
+    if not istest:
+      plot_jl_bounds(label, X)
   reconstructimages = True
-  plot_jl_bounds(label, X)
   print("done.")
